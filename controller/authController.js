@@ -40,12 +40,19 @@ exports.getAllUsers = async(req,res)=>{
 }
 
 exports.createUser = async(req,res)=>{
-    const newUser = await User.create(req.body)
-    res.status(201).json({
-        status:'success',
-        message:'new user created',
-        data:newUser
-    })
+    const data = req.body
+    const newUser = await User.create(data)
+    if (newUser){
+        res.status(201).json({
+            status:'success'
+        })
+    }
+    if(!newUser){
+        res.status(404).json({
+            status: 'fail'
+        })
+    }
+ 
 }
 
 exports.updateUser = async (req,res)=>{

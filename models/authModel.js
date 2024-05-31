@@ -24,7 +24,10 @@ const AuditSchema = new mongoose.Schema({
     },
     quantity:Number,
     finance:String,
-    identificationId:String,
+    identificationId:{
+        type: String,
+        
+    },
     user:String,
     location:String,
     remarks:{
@@ -67,7 +70,7 @@ const AuthUserSchema = new mongoose.Schema({
     },
      department:{
         type:String,
-        unique:true
+      
      },
      status:{
         type:String,
