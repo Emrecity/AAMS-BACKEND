@@ -1,8 +1,8 @@
 const User = require('../models/authModel')
+const asyncErrorHandler = require('../utils/asyncErrorHandler')
 
-exports.getUser = async(req,res)=>{
+exports.getUser = asyncErrorHandler( async(req,res,next)=>{
     const id = req.params.id
-    try{
         if(id){
             const user = await User.findById(id)
             res.status(200).json({
@@ -10,14 +10,11 @@ exports.getUser = async(req,res)=>{
                 data:user
             })
         }
-    }catch(err){
-        console.log(err)
-    }
 
-}
+})
 
-exports.getAllUsers = async(req,res)=>{
-    try{
+exports.getAllUsers = asyncErrorHandler( async(req,res,next)=>{
+
         const data = await User.find().where('status').equals('active')
         if(data || data != ''){
          res.status(200).json({
@@ -33,13 +30,9 @@ exports.getAllUsers = async(req,res)=>{
             })
          }
       
-    }catch(err){
-        console.log(err.message)
-    }
+})
 
-}
-
-exports.createUser = async(req,res)=>{
+exports.createUser = asyncErrorHandler( async(req,res,next)=>{
     const data = req.body
     const newUser = await User.create(data)
     if (newUser){
@@ -53,9 +46,9 @@ exports.createUser = async(req,res)=>{
         })
     }
  
-}
+})
 
-exports.updateUser = async (req,res)=>{
+exports.updateUser = asyncErrorHandler( async (req,res,next)=>{
     const id = req.params.id
     const data = req.body
     if(id != ''){
@@ -67,14 +60,14 @@ exports.updateUser = async (req,res)=>{
     })
 
 }
-}
+})
 
-exports.deleteUser = async(req,res)=>{
+exports.deleteUser = asyncErrorHandler(async(req,res,next)=>{
     const id = req.params.id
     await User.findByIdAndUpdate(id,{$set:{status:'inactive'}})
     res.json({
         status:'success',
         message:`${id} has been deleted successfully`
     })
-}
+})
 

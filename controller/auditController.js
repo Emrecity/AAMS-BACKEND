@@ -1,23 +1,24 @@
 const Audit = require('../models/auditModel')
+const asyncErrorHandler =  require('../utils/asyncErrorHandler')
 
-exports.getAllAsset = async (req,res)=>{
+exports.getAllAsset = asyncErrorHandler(async (req,res,next)=>{
     const data = await Audit.find()
     res.json({
       status:'success',
       data
     })
-}
+})
 
-exports.getOneAsset = async (req,res)=>{
+exports.getOneAsset = asyncErrorHandler(async (req,res,next)=>{
     const data = req.params.id
     const audit = await Audit.findById(data)
     res.json({
       status:'success',
       data:audit
     })
-}
+})
 
-exports.createAsset = async (req,res)=>{
+exports.createAsset = asyncErrorHandler(async (req,res,next)=>{
     const data = req.body
     try{
     const newDepartment = await Audit.create(data)
@@ -31,9 +32,9 @@ exports.createAsset = async (req,res)=>{
       message:err.message
     })
   }
-}
+})
 
-exports.updateAsset = async (req,res)=>{
+exports.updateAsset = asyncErrorHandler(async (req,res,next)=>{
     const id = req.params.id
     const data = req.body
     const newDepartment = await Audit.updateOne({_id:id},{$set:data},{new:true})
@@ -41,13 +42,13 @@ exports.updateAsset = async (req,res)=>{
       status:'success',
       data:newDepartment
     })
-}
+})
 
-exports.deleteAsset = async (req,res)=>{
+exports.deleteAsset = asyncErrorHandler(async (req,res,next)=>{
     const id = req.params.id
     const data = await Audit.deleteOne({_id:id})
     res.json({
       status:'success',
       data
     })
-}
+})

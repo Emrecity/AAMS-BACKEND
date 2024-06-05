@@ -12,6 +12,8 @@ const AssetRoute = require('./routes/assetRoute')
 const helmet = require('helmet')
 const cors = require('cors')
 const SwaggerDocs = require('./utils/swagger')
+const CustomError = require('./utils/CustomError')
+const globalErrorHandler = require('./controller/errorController')
 
 const corsOptions ={
     origin: 'http://localhost:5173',
@@ -28,6 +30,11 @@ app.use('/api/v1/hod/request', HodRequestRoute)
 app.use('/api/v1/hod/audit',HodAuditRoute)
 app.use('/api/v1/department',DepartmentRoute)
 app.use('/api/v1/asset',AssetRoute)
+app.all('*',(req,res,next)=>{
+    const err = new CustomError(`can't find ${req.originalUrl} on server`,404)
+    next(err)
+})
+app.use(globalErrorHandler)
 
 const Swagger = SwaggerDocs(app)
 

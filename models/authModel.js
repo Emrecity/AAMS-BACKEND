@@ -2,8 +2,14 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 const RequestSchema = new mongoose.Schema({
-    name:String,
-    description:String,
+    name:{
+        type:String,
+        unique:true
+    },
+    description:{
+        type:String,
+        unique:true
+    },
     quantity:Number,
     status:{
         type:String,
@@ -26,6 +32,7 @@ const AuditSchema = new mongoose.Schema({
     finance:String,
     identificationId:{
         type: String,
+        unique:true
         
     },
     user:String,

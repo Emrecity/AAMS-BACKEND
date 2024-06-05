@@ -1,6 +1,7 @@
 const User = require('../models/authModel')
+const asyncErrorHandler =  require('../utils/asyncErrorHandler')
 
-exports.createRequest = async(req,res)=>{
+exports.createRequest = asyncErrorHandler(async(req,res,next)=>{
     const id = req.params.id
     const data = req.body
     const request = await User.updateOne({_id:id},{$addToSet:{request:data}})
@@ -9,9 +10,9 @@ exports.createRequest = async(req,res)=>{
         data: request
     })
 
-}
+})
 
-exports.updateRequest = async(req,res)=>{
+exports.updateRequest = asyncErrorHandler(async(req,res,next)=>{
     const id = req.params.id
     const data = req.body
     const request = await User.updateOne({'request._id':id},{$set:{"request.$.name":data.name,"request.$.quantity":data.quantity,"request.$.description":data.description,"request.$.status":data.status,"request.$.message":data.message}})
@@ -28,13 +29,13 @@ exports.updateRequest = async(req,res)=>{
         })
     }
    
-}
+})
 
-exports.deleteRequest = async(req,res)=>{
+exports.deleteRequest = asyncErrorHandler(async(req,res,next)=>{
     const id = req.params.id
     const request = await User.updateOne({'request._id':id},{$pull:{request:{_id:id}}})
     res.status(201).json({
         status: 'created',
         data: request
     })
-}
+})

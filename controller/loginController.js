@@ -2,9 +2,10 @@ const User = require('../models/authModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const util = require('util')
+const asyncErrorHandler =  require('../utils/asyncErrorHandler')
 
 
-exports.login=async(req,res)=>{
+exports.login=asyncErrorHandler(async(req,res,next)=>{
    const data = req.body
    const user = await User.findOne({email:data.email}).where('status').equals('active').select('+password')
   
@@ -28,9 +29,9 @@ exports.login=async(req,res)=>{
     }
    
  
-}
+})
 
-exports.forgotPassword=async(req,res)=>{
+exports.forgotPassword=asyncErrorHandler(async(req,res,next)=>{
     const data = req.body.email
    const user = await User.find({email:data}).where('status').equals('active')
    if(user){
@@ -49,18 +50,24 @@ exports.forgotPassword=async(req,res)=>{
     })
    }
    
-}
+})
 
 
-exports.resetPassword=async(req,res)=>{
-    const token = req.headers.authorization
+exports.resetPassword= asyncErrorHandler(async(req,res,next)=>{
+    const testToken = req.headers.authorization
+    let token
+    if(testToken && testToken.startsWith('bearer')){
+        token = testToken.spilt(' ')[1]
+    }
+    if(testToken && !(testToken.startsWith('bearer'))){
+        token = testToken
+    }
     const id = req.params.id
     const data = req.body
     const decodetoken = await jwt.verify(token,process.env.SCRETE_STR)
     if(decodetoken && (data.password === data.confirmpassword)){
         password = await bcrypt.hash(data.password,12)
        const result = await User.findByIdAndUpdate(id,{$set:{password:password}})
-       console.log(decodetoken)
         res.status(200).json({
             status:'success',
             data:result
@@ -71,6 +78,5 @@ exports.resetPassword=async(req,res)=>{
             status:'fail'
         })
     }
-   
-   // res.send('reset password api')
-}
+
+})
