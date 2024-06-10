@@ -5,21 +5,26 @@ const util = require('util')
 const asyncErrorHandler =  require('../utils/asyncErrorHandler')
 
 
+
 exports.login=asyncErrorHandler(async(req,res,next)=>{
    const data = req.body
    const user = await User.findOne({email:data.email}).where('status').equals('active').select('+password')
   
-   if(!user || !(await bcrypt.compare(data.password,user.password))){
-    console.log('error')
+   if(!user ){
     res.status(404).json({
         status:'fail',
-        message:'wrong email or password'
+        message:'User not found'
             })
+    }
+    if(user && !(await bcrypt.compare(data.password,user.password))){
+        res.status(404).json({
+            status:'fail',
+            message:'Wrong Password'
+        })
     }
     const Nuser = await User.findOne({email:data.email}) 
     if(Nuser && (await bcrypt.compare(data.password,user.password))){
       const id = Nuser.id
-        console.log(id)
         const token = await jwt.sign({id},process.env.SCRETE_STR)
         res.json({
             status:'success',
@@ -51,7 +56,6 @@ exports.forgotPassword=asyncErrorHandler(async(req,res,next)=>{
    }
    
 })
-
 
 exports.resetPassword= asyncErrorHandler(async(req,res,next)=>{
     const testToken = req.headers.authorization

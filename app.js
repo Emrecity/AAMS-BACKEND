@@ -30,10 +30,6 @@ app.use('/api/v1/hod/request', HodRequestRoute)
 app.use('/api/v1/hod/audit',HodAuditRoute)
 app.use('/api/v1/department',DepartmentRoute)
 app.use('/api/v1/asset',AssetRoute)
-app.all('*',(req,res,next)=>{
-    const err = new CustomError(`can't find ${req.originalUrl} on server`,404)
-    next(err)
-})
 app.use(globalErrorHandler)
 
 const Swagger = SwaggerDocs(app)
@@ -50,3 +46,7 @@ app.listen( 3000,()=>{
     console.log(err)
 })
 
+app.all('*',(req,res,next)=>{
+    const err = new CustomError(`can't find ${req.originalUrl} on server`,404)
+    next(err)
+})

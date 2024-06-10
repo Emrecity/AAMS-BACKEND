@@ -4,13 +4,12 @@ const bcrypt = require('bcrypt')
 const RequestSchema = new mongoose.Schema({
     name:{
         type:String,
-        unique:true
     },
     description:{
         type:String,
-        unique:true
     },
     quantity:Number,
+    department:String,
     status:{
         type:String,
         enum:['pending','accepted','decline'],
@@ -29,10 +28,10 @@ const AuditSchema = new mongoose.Schema({
         maxLength:300
     },
     quantity:Number,
+    department:String,
     finance:String,
     identificationId:{
         type: String,
-        unique:true
         
     },
     user:String,
@@ -64,7 +63,8 @@ const AuthUserSchema = new mongoose.Schema({
     },
     email:{
         type:String,
-        require:true
+        require:true,
+        unique:true
     },
     role:{
         type:String,
@@ -73,7 +73,8 @@ const AuthUserSchema = new mongoose.Schema({
     },
     phone:{
         type:String,
-        require:true
+        require:true,
+        unique:true
     },
      department:{
         type:String,

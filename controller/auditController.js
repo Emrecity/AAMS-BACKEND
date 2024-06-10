@@ -20,18 +20,11 @@ exports.getOneAsset = asyncErrorHandler(async (req,res,next)=>{
 
 exports.createAsset = asyncErrorHandler(async (req,res,next)=>{
     const data = req.body
-    try{
     const newDepartment = await Audit.create(data)
     res.json({
       status:'success',
       data:newDepartment
     })
-  }catch(err){
-    res.json({
-      status:'fail',
-      message:err.message
-    })
-  }
 })
 
 exports.updateAsset = asyncErrorHandler(async (req,res,next)=>{
