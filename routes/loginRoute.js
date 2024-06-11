@@ -52,10 +52,10 @@ router.route('/forget-password')
  */
 .post(loginController.forgotPassword)
 
-router.route('/reset-password/:id')
+router.route('/reset-password')
 /**
  * @swagger
- * /api/v1/login/reset-password/{id}:
+ * /api/v1/login/reset-password:
  *  patch:
  *      tags:
  *          - Login
@@ -63,9 +63,6 @@ router.route('/reset-password/:id')
  *      parameters:
  *          - in: header
  *            name: authorization
- *          - in: path
- *            name: id
- *            require: true
  *          - in: body
  *            name: password
  *            required: true

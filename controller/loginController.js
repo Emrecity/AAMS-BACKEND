@@ -37,50 +37,48 @@ exports.login=asyncErrorHandler(async(req,res,next)=>{
 })
 
 exports.forgotPassword=asyncErrorHandler(async(req,res,next)=>{
-    const data = req.body.email
-   const user = await User.find({email:data}).where('status').equals('active')
+    const email = req.body.email
+     const user = await User.findOne({email}).where('status').equals('active')
+   if(!user ){
+        res.status(404).json({
+            status:'fail',
+            message:'User not found'
+                })
+    }
    if(user){
     const id = user._id
     const token = await util.promisify(jwt.sign)({id},process.env.SCRETE_STR)
     res.status(200).json({
         status:'success',
         token,
-        data:user
+        id
     })
-   }
-   if(!user){
-    res.status(404).json({
-        status:'fail',
-        message: 'no user found'
-    })
-   }
-   
+    }
+
 })
 
 exports.resetPassword= asyncErrorHandler(async(req,res,next)=>{
-    const testToken = req.headers.authorization
-    let token
-    if(testToken && testToken.startsWith('bearer')){
-        token = testToken.spilt(' ')[1]
-    }
-    if(testToken && !(testToken.startsWith('bearer'))){
-        token = testToken
-    }
-    const id = req.params.id
-    const data = req.body
-    const decodetoken = await jwt.verify(token,process.env.SCRETE_STR)
-    if(decodetoken && (data.password === data.confirmpassword)){
-        password = await bcrypt.hash(data.password,12)
-       const result = await User.findByIdAndUpdate(id,{$set:{password:password}})
-        res.status(200).json({
-            status:'success',
-            data:result
-        })
-    }
-    if(!decodetoken || !(data.password === data.confirmpassword)){
-        res.status(404).json({
-            status:'fail'
-        })
-    }
-
+   const token = req.headers.authorization
+   const data = req.body
+   const decodeToken = token.split(" ")[1]
+   if(decodeToken){
+      const verifyToken = jwt.verify(decodeToken,process.env.SCRETE_STR)
+      if(verifyToken && (data.password == data.confirmpassword)){
+        const id = verifyToken.id
+        const password = await bcrypt.hash(data.password,12)
+        const response = await User.updateOne({_id:id},{$set:{password:password}})
+        if(!response){
+            res.status(400).json({
+                status:'fail',
+                message:'Update fail'
+            })
+        }
+        if(response){
+            res.status(200).json({
+                status:'success',
+                message:'Update successful'
+            })
+        }
+      }
+   }
 })
