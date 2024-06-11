@@ -79,6 +79,11 @@ exports.resetPassword= asyncErrorHandler(async(req,res,next)=>{
                 message:'Update successful'
             })
         }
+      }else{
+        res.status(405).json({
+            status:'fail',
+            message:'Incorrect confirm password'
+        })
       }
    }
 })
