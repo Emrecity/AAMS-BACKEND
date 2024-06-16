@@ -45,7 +45,7 @@ const AuditSchema = new mongoose.Schema({
 const StaffSchema = new mongoose.Schema({
     title:{
         type:String,
-        enum:['Mr','Mrs','Ing','Doc','Prof'],
+        enum:['Mr','Mrs','Ing','Dr','Prof'],
         default:'Mr'
     },
     firstname:{
