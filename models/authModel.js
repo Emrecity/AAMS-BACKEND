@@ -42,6 +42,36 @@ const AuditSchema = new mongoose.Schema({
     }
 })
 
+const StaffSchema = new mongoose.Schema({
+    title:{
+        type:String,
+        enum:['Mr','Mrs','Ing','Doc','Prof'],
+        default:'Mr'
+    },
+    firstname:{
+        type:String
+    },
+    lastname:{
+        type:String
+    },
+    othername:{
+        type:String
+    },
+    email:{
+        type:String,
+    },
+    phone:{
+        type:String
+    },
+    gender:{
+        type:String,
+        enum:['male','female']
+    },
+    office:{
+        type:String
+    }
+})
+
 const AuthUserSchema = new mongoose.Schema({
     firstname:{
         type:String,
@@ -101,7 +131,8 @@ const AuthUserSchema = new mongoose.Schema({
         
      },
      request:[RequestSchema],
-     audit:[AuditSchema]   
+     audit:[AuditSchema],
+     staff:[StaffSchema]   
 })
 
 AuthUserSchema.pre('save',async function(next){
