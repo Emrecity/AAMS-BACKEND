@@ -13,6 +13,8 @@ const AssetRoute = require('./routes/assetRoute')
 const VenueRoute = require('./routes/venuRoute')
 const helmet = require('helmet')
 const cors = require('cors')
+const ratelimit = require('express-rate-limit')
+const sanitize = require ('express-mongo-sanitize')
 const SwaggerDocs = require('./utils/swagger')
 const CustomError = require('./utils/CustomError')
 const globalErrorHandler = require('./controller/errorController')
@@ -22,9 +24,18 @@ const corsOptions ={
     optionsSuccessStatus:200.
 }
 
+const limiter = ratelimit({
+    max:5,
+    windowMs:60*60*1000,
+    message:'Too many request try again an hour time'
+
+})
+
 const app = express();
 app.use(cors(corsOptions))
-app.use(express.json())
+app.use(express.json({limit:'15KB'}))
+app.use('/api/v1',limiter)
+app.use(sanitize())
 app.use(helmet())
 app.use('/api/v1/user',authRoute)
 app.use('/api/v1/login',loginRoute)
