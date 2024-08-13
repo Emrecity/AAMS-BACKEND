@@ -4,12 +4,19 @@ const asyncErrorHandler =  require('../utils/asyncErrorHandler')
 exports.createStaff = asyncErrorHandler(async(req,res,next)=>{
     const id = req.params.id
     const data = req.body
-    const request = await User.updateOne({_id:id},{$addToSet:{staff:data}})
-    res.status(201).json({
-        status: 'created',
-        data: request
+    const avail = await User.findOne({'staff.staffid':data.staffid})
+    const phonenum = await User.findOne({'staff.phone':data.phone})
+    if(!avail && !phonenum){
+        const request = await User.updateOne({_id:id},{$addToSet:{staff:data}})
+        res.status(201).json({
+            status: 'created',
+            data: request
+        })
+    }
+    res.status(404).json({
+        status:'failed',
+        message:"Duplicate Staff ID"
     })
-
 })
 
 exports.updateStaff = asyncErrorHandler(async(req,res,next)=>{

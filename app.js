@@ -34,7 +34,7 @@ const limiter = ratelimit({
 const app = express();
 app.use(cors(corsOptions))
 app.use(express.json({limit:'25KB'}))
-app.use('/api/v1',limiter)
+// app.use('/api/v1',limiter)
 app.use(sanitize())
 app.use(helmet())
 app.use('/api/v1/user',authRoute)
