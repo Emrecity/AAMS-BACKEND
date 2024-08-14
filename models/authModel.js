@@ -48,6 +48,9 @@ const StaffSchema = new mongoose.Schema({
         enum:['Mr','Mrs','Ing','Dr','Prof'],
         default:'Mr'
     },
+    staffid:{
+        type:String,
+    },
     firstname:{
         type:String
     },
